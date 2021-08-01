@@ -40,7 +40,7 @@ export default function UserList() {
               Usuários
             </Heading>
 
-            <Link href="/users/create" passHref prefetch>
+            <Link href="/users/create" passHref ch>
               <Button
                 as="a"
                 size="sm"

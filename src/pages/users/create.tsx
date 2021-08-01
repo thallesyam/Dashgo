@@ -47,7 +47,7 @@ export default function CreateUser() {
 
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">
-              <Link href="/users" passHref prefetch>
+              <Link href="/users" passHref ch>
                 <Button as="a" colorScheme="whiteAlpha">
                   Cancelar
                 </Button>
