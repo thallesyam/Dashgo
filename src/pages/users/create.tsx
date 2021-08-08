@@ -17,8 +17,12 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { Header } from '../../components/Header'
 import { Sidebar } from '../../components/Sidebar'
 import { Input } from '../../components/Form/Input'
+import { useMutation } from 'react-query'
+import { api } from '../../services/api'
+import { queryClient } from '../../services/queryClient'
+import { useRouter } from 'next/router'
 
-type CreateuserFormData = {
+type CreateUserFormData = {
   name: string
   email: string
   password: string
@@ -38,17 +42,35 @@ const createUserFormSchema = yup.object().shape({
 })
 
 export default function CreateUser() {
+  const router = useRouter()
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(createUserFormSchema),
   })
   const { errors } = formState
+  const createUser = useMutation(
+    async (user: CreateUserFormData) => {
+      const response = await api.post('users', {
+        user: {
+          ...user,
+          created_at: new Date(),
+        },
+      })
 
-  const handleCreateUser: SubmitHandler<CreateuserFormData> = async (
+      return response.data.user
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('users')
+      },
+    }
+  )
+
+  const handleCreateUser: SubmitHandler<CreateUserFormData> = async (
     values
   ) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await createUser.mutateAsync(values)
 
-    console.log(values)
+    router.push('/users')
   }
 
   return (
